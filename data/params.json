@@ -1222,11 +1222,5 @@
     "param_desc": "",
     "param_type": "int",
     "param_check": ""
-  },
-  {
-    "param_name": "star_service_premium_count",
-    "param_desc": "",
-    "param_type": "int",
-    "param_check": ""
   }
 ]

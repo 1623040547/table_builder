@@ -69,24 +69,15 @@ class Event:
 
 
 class EventUtil:
-    def __init__(self) -> None:
+    def __init__(self, events: [Event]) -> None:
         self.path = './data/events.json'
-        self.events = self.get_events()
+        self.events = events
         self.plate_events = {}
         for e in self.events:
             if not self.plate_events.__contains__(e.event_plate):
                 self.plate_events[e.event_plate] = [e]
             else:
                 self.plate_events[e.event_plate].append(e)
-
-    def get_events(self) -> list[Event]:
-        my_json = open(self.path).read()
-        events = json.loads(my_json)
-        tmp = []
-        for event in events:
-            tmp.append(Event.from_json(json.dumps(event)))
-        self.events = tmp
-        return tmp
 
     def locations(self):
         tmp = []

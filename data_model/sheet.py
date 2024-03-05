@@ -92,3 +92,13 @@ class SpreadSheets:
             if sheet.title == title:
                 return sheet
         raise
+
+    def remove(self, title):
+        self.sheets.remove(self.where(title))
+
+    def exist(self, title):
+        try:
+            self.where(title)
+            return True
+        except:
+            return False

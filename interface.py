@@ -23,8 +23,8 @@ def get_token():
 class SheetDao:
     active_file_id = ''
 
-    def __init__(self, sheet: SheetTable) -> None:
-        self.sheet = sheet.value
+    def __init__(self, sheet: str) -> None:
+        self.sheet = sheet
         self.token = get_token()
         self.file_id = my_healer_file_id
         self.headers = {"Authorization": "Bearer {0}".format(self.token)}
@@ -53,11 +53,72 @@ class SheetDao:
                     "dimension": {
                         "sheetId": self.sheets.where(self.sheet).sheet_id,
                         "majorDimension": "ROWS",
-                        "length": count
+                        "length": count + 1
                     }
                 }
             )
         )
+        print(response.content)
+
+    def remove_rows(self, count: int):
+        if count == 1:
+            return
+        response = requests.delete(
+            "https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/{0}/dimension_range".format(self.file_id),
+            headers=self.headers,
+            data=json.dumps(
+                {
+                    "dimension": {
+                        "sheetId": self.sheets.where(self.sheet).sheet_id,
+                        "majorDimension": "ROWS",
+                        "startIndex": 1,
+                        "endIndex": count - 1
+                    }
+                }
+            )
+        )
+        print(response.content)
+
+    def add_sheet(self, title: str):
+        response = requests.post(
+            "https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/{0}/sheets_batch_update".format(self.file_id),
+            headers=self.headers,
+            data=json.dumps({
+                "requests": [
+                    {
+                        "addSheet": {
+                            "properties": {
+                                "title": title,
+                                "index": 1
+                            }
+                        }
+                    },
+                ]
+            })
+        )
+        self.sheets = self.get_sheets()
+        print(response.content)
+
+    def clean_sheet(self, sheet_id: str):
+        response = requests.put(
+            "https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/{0}/styles_batch_update".format(self.file_id),
+            headers=self.headers,
+            data=json.dumps({
+                "data": {
+                    "ranges": [
+                        sheet_id
+                    ],
+                    "style":
+                        {
+                            "clean": True
+                        },
+
+                }
+            })
+
+        )
+        self.remove_rows(self.sheets.where(self.sheet).grid_properties.row_count)
+        self.add_rows(self.sheets.where(self.sheet).grid_properties.row_count * 2)
         print(response.content)
 
     def get_sheets(self) -> SpreadSheets:
