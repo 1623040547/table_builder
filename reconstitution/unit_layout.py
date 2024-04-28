@@ -1,20 +1,24 @@
 import numpy as np
 
+from reconstitution.config_reader import TableLoad
+
+
+class TableUnitLayout:
+    pass
+
 
 class UnitLayout:
-    def __init__(self, index: dict, data: dict):
+    def __init__(self, load: TableLoad):
         self.head = []
         self.sub_head = {}
         self.head_name = []
         self.sheet = {}
-        self.index = index
-        self.data = data
+        self.index = load.index_json
+        self.data = load.data_json
         self.table_matrix = {}
         self.sheet_head()
         self.sheet_split()
         self.sheet_to_matrix()
-
-
 
     def index0(self, name: str) -> int:
         if self.head.__contains__(name):
