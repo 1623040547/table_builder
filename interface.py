@@ -208,7 +208,7 @@ class SheetDao:
         )
         print(response.content)
 
-    def merge_column(self, length: int, ):
+    def merge_column(self, length: int,):
         ran = "{0}!{1}:{2}".format(
             self.sheets.where(self.sheet).sheet_id,
             "{0}{1}".format(self.alpha, self.number),

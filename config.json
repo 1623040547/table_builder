@@ -1,0 +1,14 @@
+{
+  "app_id": "cli_a5321589fbfb900e",
+  "app_secret": "npcTpll8Ik4A7bGxoejDyfMMWocfh8g2",
+  "table": [
+    {
+      "sheet_id": "A4VhsjDEqhzEpXtbxNhcZGb4nCe",
+      "template": {
+        "./index/events_index.json": "./data/events.json",
+        "./index/param_index.json": "./data/params.json",
+        "./index/union_param_index.json": "./data/union_params.json"
+      }
+    }
+  ]
+}

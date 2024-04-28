@@ -1,117 +1,119 @@
-[
-  {
-    "param_name": "order_model",
-    "param_desc": "",
-    "param_type": "OrderModelParam",
-    "params": [
-      "star_id",
-      "star_name",
-      "order_id",
-      "order_status",
-      "service_type",
-      "star_service_price",
-      "order_type"
-    ]
-  },
-  {
-    "param_name": "star_model",
-    "param_desc": "",
-    "param_type": "StarModelParam",
-    "params": [
-      "star_id",
-      "star_name"
-    ]
-  },
-  {
-    "param_name": "coupon_model",
-    "param_desc": "",
-    "param_type": "CouponModelParam",
-    "params": [
-      "order_coupon_id",
-      "order_coupon_type",
-      "order_coupon_value",
-      "order_coupon_source"
-    ]
-  },
-  {
-    "param_name": "iap_model",
-    "param_desc": "",
-    "param_type": "IapModelParam",
-    "params": [
-      "product_id",
-      "price",
-      "price_usd"
-    ]
-  },
-  {
-    "param_name": "push_action_model",
-    "param_desc": "",
-    "param_type": "PushActionModelParam",
-    "params": [
-      "push_id",
-      "push_event",
-      "push_jump_action"
-    ]
-  },
-  {
-    "param_name": "position_node",
-    "param_desc": "",
-    "param_type": "PositionNodeParam",
-    "params": []
-  },
-  {
-    "param_name": "touch_service_data",
-    "param_desc": "",
-    "param_type": "TouchServiceDataParam",
-    "params": [
-      "touch_id",
-      "touch_service_position_full",
-      "service_type",
-      "order_create_from",
-      "star_service_price"
-    ]
-  },
-  {
-    "param_name": "credit_card_info",
-    "param_desc": "",
-    "param_type": "CreditCardInfoParam",
-    "params": [
-      "credit_card_id",
-      "credit_card_is_preferred",
-      "credit_card_type",
-      "credit_card_pay_method_id",
-      "credit_card_customer_id",
-      "credit_card_name",
-      "credit_card_brand",
-      "credit_card_first_six",
-      "credit_card_last_four",
-      "credit_card_number",
-      "credit_card_expire_date",
-      "card_num_last_four"
-    ]
-  },
-  {
-    "param_name": "pay_event_context",
-    "param_desc": "",
-    "param_type": "PayEventContextParam",
-    "params": [
-      "price",
-      "price_usd",
-      "product_id",
-      "purchase_platform",
-      "scene",
-      "action_position"
-    ]
-  },
-  {
-    "param_name": "premium_service",
-    "param_desc": "",
-    "param_type": "PremiumServiceParam",
-    "params": [
-      "service_id",
-      "service_name",
-      "star_service_price",
-      "service_type"
-    ]
-  }
-]
+{
+  "data": [
+    {
+      "param_name": "order_model",
+      "param_desc": "",
+      "param_type": "OrderModelParam",
+      "params": [
+        "star_id",
+        "star_name",
+        "order_id",
+        "order_status",
+        "service_type",
+        "star_service_price",
+        "order_type"
+      ]
+    },
+    {
+      "param_name": "star_model",
+      "param_desc": "",
+      "param_type": "StarModelParam",
+      "params": [
+        "star_id",
+        "star_name"
+      ]
+    },
+    {
+      "param_name": "coupon_model",
+      "param_desc": "",
+      "param_type": "CouponModelParam",
+      "params": [
+        "order_coupon_id",
+        "order_coupon_type",
+        "order_coupon_value",
+        "order_coupon_source"
+      ]
+    },
+    {
+      "param_name": "iap_model",
+      "param_desc": "",
+      "param_type": "IapModelParam",
+      "params": [
+        "product_id",
+        "price",
+        "price_usd"
+      ]
+    },
+    {
+      "param_name": "push_action_model",
+      "param_desc": "",
+      "param_type": "PushActionModelParam",
+      "params": [
+        "push_id",
+        "push_event",
+        "push_jump_action"
+      ]
+    },
+    {
+      "param_name": "position_node",
+      "param_desc": "",
+      "param_type": "PositionNodeParam",
+      "params": []
+    },
+    {
+      "param_name": "touch_service_data",
+      "param_desc": "",
+      "param_type": "TouchServiceDataParam",
+      "params": [
+        "touch_id",
+        "touch_service_position_full",
+        "service_type",
+        "order_create_from",
+        "star_service_price"
+      ]
+    },
+    {
+      "param_name": "credit_card_info",
+      "param_desc": "",
+      "param_type": "CreditCardInfoParam",
+      "params": [
+        "credit_card_id",
+        "credit_card_is_preferred",
+        "credit_card_type",
+        "credit_card_pay_method_id",
+        "credit_card_customer_id",
+        "credit_card_name",
+        "credit_card_brand",
+        "credit_card_first_six",
+        "credit_card_last_four",
+        "credit_card_number",
+        "credit_card_expire_date",
+        "card_num_last_four"
+      ]
+    },
+    {
+      "param_name": "pay_event_context",
+      "param_desc": "",
+      "param_type": "PayEventContextParam",
+      "params": [
+        "price",
+        "price_usd",
+        "product_id",
+        "purchase_platform",
+        "scene",
+        "action_position"
+      ]
+    },
+    {
+      "param_name": "premium_service",
+      "param_desc": "",
+      "param_type": "PremiumServiceParam",
+      "params": [
+        "service_id",
+        "service_name",
+        "star_service_price",
+        "service_type"
+      ]
+    }
+  ]
+}

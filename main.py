@@ -1,11 +1,11 @@
-from data_model.event import Event, EventUtil
-from interface import SheetDao
-from transaction import write_events, write_params, write_union_params
+from reconstitution.config_reader import test_config_reader, ConfigReader
+from reconstitution.unit_layout import UnitLayout
 
-import json
+# test_config_reader()
 
-write_params()
+ConfigReader.read_config()
 
-write_union_params()
-
-write_events()
+for sheet_id, datas in ConfigReader.sheet_data.items():
+    for data in datas:
+        layout = UnitLayout(data[0], data[1])
+        print(layout.head)
