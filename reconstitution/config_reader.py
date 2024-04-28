@@ -9,7 +9,7 @@ import os
 class TableLoad:
     app_id: str
     app_secret: str
-    sheet_id: str
+    table_id: str
     index_name: str
     data_name: str
     index_json: dict
@@ -39,7 +39,7 @@ class ConfigReader:
         cls.file_suffix = j["file_suffix"]
 
         for t in j["table"]:
-            sheet_id = t["sheet_id"]
+            table_id = t["table_id"]
             for k, v in t["loads"].items():
                 index_file = cls.index_path + '/' + k + cls.file_suffix
                 data_file = cls.data_path + '/' + v + cls.file_suffix
@@ -47,7 +47,7 @@ class ConfigReader:
                     TableLoad(
                         app_id=cls.app_id,
                         app_secret=cls.app_secret,
-                        sheet_id=sheet_id,
+                        table_id=table_id,
                         index_name=k,
                         data_name=v,
                         index_json=json.load(open(index_file, encoding='utf-8')),

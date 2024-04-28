@@ -3,7 +3,7 @@
   "app_secret": "npcTpll8Ik4A7bGxoejDyfMMWocfh8g2",
   "table": [
     {
-      "sheet_id": "A4VhsjDEqhzEpXtbxNhcZGb4nCe",
+      "table_id": "A4VhsjDEqhzEpXtbxNhcZGb4nCe",
       "index_path": "./index",
       "data_path": "./data",
       "file_suffix": ".json",

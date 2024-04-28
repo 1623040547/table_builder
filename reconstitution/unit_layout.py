@@ -1,14 +1,38 @@
-import numpy as np
+import dataclasses
 
 from reconstitution.config_reader import TableLoad
 
 
-class TableUnitLayout:
-    pass
+@dataclasses.dataclass
+class SheetUnitLayout:
+    load: TableLoad
+    table_id: str
+    sheet_id: str
+    heads: [str]
+    heads_redirect: dict
+    heads_value: [str]
+    matrix: dict
+
+    def head_index(self, head: str):
+        if self.heads.__contains__(head):
+            head_i = self.heads.index(head)
+            redirect_i = head_i
+            for k in self.heads_redirect.keys():
+                j = self.heads.index(k)
+                if head_i > j:
+                    redirect_i = redirect_i + len(self.heads_redirect[k]) - 1
+            return redirect_i
+        else:
+            for k, v in self.heads_redirect.items():
+                if v.__contains__(head):
+                    head_i = self.head_index(k)
+                    return head_i + v.index(head)
 
 
 class UnitLayout:
     def __init__(self, load: TableLoad):
+        self.layout = []
+
         self.head = []
         self.sub_head = {}
         self.head_name = []
