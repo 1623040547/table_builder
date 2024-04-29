@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+from reconstitution.api_manager import ApiManager
 from reconstitution.config_reader import TableLoad
 
 
@@ -7,6 +8,7 @@ from reconstitution.config_reader import TableLoad
 class SheetUnitLayout:
     load: TableLoad
     sheet_name: str
+    sheet_id: str
     heads: list[str]
     heads_redirect: dict
     heads_name: list[str]
@@ -64,7 +66,12 @@ class UnitLayout:
                 raise
 
     def split_sheets(self):
-
+        api_manager = ApiManager(
+            sheet=self.index['sheet_name'],
+            table_id=self.load.table_id,
+            app_id=self.load.app_id,
+            app_secret=self.load.app_secret
+        )
         if self.data.__contains__('data'):
             self.layouts.append(
                 SheetUnitLayout(
@@ -74,7 +81,8 @@ class UnitLayout:
                     heads_name=self.heads_name,
                     sheet_json=self.data['data'],
                     sheet_name=self.index['sheet_name'],
-                    matrix=[]
+                    matrix=[],
+                    sheet_id=api_manager.create_sheet_id(self.index['sheet_name'])
                 )
             )
         elif type(self.data) is list:
@@ -87,7 +95,8 @@ class UnitLayout:
                         heads_name=self.heads_name,
                         sheet_json=d['data'],
                         sheet_name=d[self.index['sheet_name']],
-                        matrix=[]
+                        matrix=[],
+                        sheet_id=api_manager.create_sheet_id(self.index['sheet_name'])
                     )
                 )
         else:

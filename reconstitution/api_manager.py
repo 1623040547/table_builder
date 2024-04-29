@@ -214,6 +214,13 @@ class ApiManager:
         )
         print(response.content)
 
+    def create_sheet_id(self, sheet: str):
+        if self.sheets.exist(sheet):
+            return self.sheets.where(sheet).sheet_id
+        else:
+            self.add_sheet(sheet)
+            return self.create_sheet_id(sheet)
+
     @classmethod
     def ram_colors(cls, length):
         if len(cls.colors) < length:
@@ -223,16 +230,21 @@ class ApiManager:
         return cls.colors[0:length]
 
     @classmethod
-    def pull_list_style(cls, pull_list: [str]):
+    def pull_list_style(cls, pull: [str]):
         """
         下拉列表样式
         :return: Map
         """
-        if len(pull_list) == 0:
+        pulls = []
+        if type(pull) is str:
+            pulls = [pull]
+        elif type(pull) is list:
+            pulls = pull
+        if len(pulls) == 0:
             return ""
         return {
             "type": "multipleValue",
-            "values": pull_list
+            "values": list(set(pulls))
         }
 
     @classmethod

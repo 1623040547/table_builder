@@ -144,13 +144,14 @@ class UnitSort:
             unit_combines = []
         combines: list[SheetCombine] = []
         for i, row in enumerate(self.layout.matrix[1:]):
+            i = i + 1
             if row[-1] != 0:
                 for unit_combine in unit_combines:
                     if row[-1] == 1:
                         continue
                     combines.append(SheetCombine(
                         offset_x=self.layout.head_index(unit_combine),
-                        offset_y=i + 1,
+                        offset_y=i,
                         width=1,
                         height=row[-1]
                     ), )
@@ -164,7 +165,7 @@ class UnitSort:
                             continue
                         combines.append(SheetCombine(
                             offset_x=index_g,
-                            offset_y=global_map[global_combine][1] + 1,
+                            offset_y=global_map[global_combine][1],
                             width=1,
                             height=height
                         ), )
@@ -180,6 +181,7 @@ class UnitSort:
         pull_map = {}
         pulls: list[SheetPullList] = []
         for i, row in enumerate(self.layout.matrix[1:]):
+            i = i + 1
             for pull_item in pull_list:
                 index_p = self.layout.head_index(pull_item)
                 if type(row[index_p]) is list and len(row[index_p]) != 0:
@@ -194,7 +196,7 @@ class UnitSort:
                         pulls.append(SheetPullList(
                             is_multi=pull_map[pull_item][-1],
                             offset_x=index_p,
-                            offset_y=i + 1,
+                            offset_y=pull_map[pull_item][1],
                             width=1,
                             height=i - pull_map[pull_item][1],
                             values=pull_map[pull_item][2]
@@ -207,6 +209,4 @@ class UnitSort:
                         pull_map[pull_item][0] = True
                         pull_map[pull_item][1] = i
                     pull_map[pull_item][2].extend(items)
-        for pull in pulls:
-            pull.values = list(set(pull.values))
         self.sheet_sort.sheet_pulls = pulls
