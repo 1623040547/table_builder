@@ -75,6 +75,9 @@ class UnitSort:
         self.set_combines()
         self.set_pulls()
 
+        for row in self.layout.matrix[1:]:
+            row.pop()
+
     def global_priority_mount(self):
         if len(self.global_mounts) == 0:
             return
