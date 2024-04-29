@@ -21,11 +21,11 @@ class Event:
     # 参数与表单头相互对应
     def head_map(self):
         return {
-            SheetHead.event_name.head_name(): self.event_name,
-            SheetHead.event_desc.head_name(): self.event_desc,
-            SheetHead.event_plate.head_name(): self.event_plate,
-            SheetHead.locations.head_name(): MyUtil.pull_list_style(self.locations),
-            SheetHead.panels.head_name(): MyUtil.pull_list_style(self.panels),
+            SheetHead.event_name.heads_name(): self.event_name,
+            SheetHead.event_desc.heads_name(): self.event_desc,
+            SheetHead.event_plate.heads_name(): self.event_plate,
+            SheetHead.locations.heads_name(): MyUtil.pull_list_style(self.locations),
+            SheetHead.panels.heads_name(): MyUtil.pull_list_style(self.panels),
         }
 
     # 将事件转换为电子表格所能接受的格式
@@ -38,7 +38,7 @@ class Event:
                 item0.append(self.head_map()[name])
             elif len(self.param_list) > 0:
                 tmp = self.param_list[0].head_map()[name]
-                if name == SheetHead.param_name.head_name():
+                if name == SheetHead.param_name.heads_name():
                     tmp = MyUtil.link_style(tmp)
                 item0.append(tmp)
             else:
@@ -51,7 +51,7 @@ class Event:
                 for name in SheetHead.head_names(SheetTable.event):
                     if param.head_map().__contains__(name):
                         tmp = param.head_map()[name]
-                        if name == SheetHead.param_name.head_name():
+                        if name == SheetHead.param_name.heads_name():
                             tmp = MyUtil.link_style(tmp)
                         item1.append(tmp)
                     else:

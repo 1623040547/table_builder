@@ -7,4 +7,4 @@ ConfigReader.read_config()
 
 for load in ConfigReader.loads:
     layout = UnitLayout(load)
-    print(layout.head)
+    print(layout.heads)

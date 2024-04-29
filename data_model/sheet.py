@@ -29,7 +29,7 @@ class SheetHead(Enum):
         heads = []
         for h in SheetHead:
             if h.value[1].__contains__(table):
-                heads.append(h.head_name())
+                heads.append(h.heads_name())
         return heads
 
     def head_name(self):

@@ -17,10 +17,10 @@ class UnionParam:
     # 参数与表单头相互对应
     def head_map(self):
         return {
-            SheetHead.param_name.head_name(): self.param_name,
-            SheetHead.param_type.head_name(): MyUtil.pull_list_style([self.param_type]),
-            SheetHead.param_desc.head_name(): self.param_desc,
-            SheetHead.param_check.head_name(): "",
+            SheetHead.param_name.heads_name(): self.param_name,
+            SheetHead.param_type.heads_name(): MyUtil.pull_list_style([self.param_type]),
+            SheetHead.param_desc.heads_name(): self.param_desc,
+            SheetHead.param_check.heads_name(): "",
         }
 
     @classmethod

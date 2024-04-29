@@ -1,17 +1,18 @@
-import dataclasses
+from dataclasses import dataclass
 
 from reconstitution.config_reader import TableLoad
 
 
-@dataclasses.dataclass
+@dataclass
 class SheetUnitLayout:
     load: TableLoad
     table_id: str
-    sheet_id: str
+    sheet_name: str
     heads: [str]
     heads_redirect: dict
-    heads_value: [str]
-    matrix: dict
+    heads_name: [str]
+    sheet_json: dict
+    matrix: list
 
     def head_index(self, head: str):
         if self.heads.__contains__(head):
@@ -31,98 +32,94 @@ class SheetUnitLayout:
 
 class UnitLayout:
     def __init__(self, load: TableLoad):
-        self.layout = []
-
-        self.head = []
-        self.sub_head = {}
-        self.head_name = []
-        self.sheet = {}
+        self.load = load
         self.index = load.index_json
         self.data = load.data_json
-        self.table_matrix = {}
-        self.sheet_head()
-        self.sheet_split()
+
+        # 确定表头
+        self.heads = []
+        self.heads_redirect = {}
+        self.heads_name = []
+        self.get_heads()
+
+        # 开始布局
+        self.layouts: list[SheetUnitLayout] = []
+        # 表单划分
+        self.split_sheets()
+        # 数据矩阵
         self.sheet_to_matrix()
 
-    def index0(self, name: str) -> int:
-        if self.head.__contains__(name):
-            i = self.head.index(name)
-            ii = i
-            for k in self.sub_head.keys():
-                j = self.head.index(k)
-                if i > j:
-                    ii = ii + len(self.sub_head[k]) - 1
-            return ii
-        else:
-            for k, v in self.sub_head.items():
-                if v.__contains__(name):
-                    i = self.index0(k)
-                    return i + v.index(name)
-        raise
-
-    def sheet_head(self):
+    def get_heads(self):
         for k, v in self.index['data_head'].items():
             if type(v) is str:
-                self.head.append(k)
-                self.head_name.append(v)
+                self.heads.append(k)
+                self.heads_name.append(v)
             elif type(v) is dict:
-                sub_head = []
+                heads_redirect = []
                 for k1, v1 in v.items():
-                    sub_head.append(k1)
-                    self.head_name.append(v1)
-                self.head.append(k)
-                self.sub_head = {k: sub_head}
+                    heads_redirect.append(k1)
+                    self.heads_name.append(v1)
+                self.heads.append(k)
+                self.heads_redirect = {k: heads_redirect}
             else:
                 raise
 
-    def sheet_split(self):
+    def split_sheets(self):
+
         if self.data.__contains__('data'):
-            self.sheet[self.index['sheet_name']] = self.data['data']
+            self.layouts.append(
+                SheetUnitLayout(
+                    load=self.load,
+                    table_id=self.load.table_id,
+                    heads=self.heads,
+                    heads_redirect=self.heads_redirect,
+                    heads_name=self.heads_name,
+                    sheet_json=self.data['data'],
+                    sheet_name=self.index['sheet_name'],
+                    matrix=[]
+                )
+            )
         elif type(self.data) is list:
             for d in self.data:
-                self.sheet[d[self.index['sheet_name']]] = d['data']
+                self.layouts.append(
+                    SheetUnitLayout(
+                        load=self.load,
+                        table_id=self.load.table_id,
+                        heads=self.heads,
+                        heads_redirect=self.heads_redirect,
+                        heads_name=self.heads_name,
+                        sheet_json=d['data'],
+                        sheet_name=d[self.index['sheet_name']],
+                        matrix=[]
+                    )
+                )
         else:
             raise
 
     def sheet_to_matrix(self):
-        for sheet_name, units in self.sheet.items():
-            print(sheet_name)
-            if sheet_name == '参数':
-                print()
-                pass
-            matrix = []
-            matrix.append(self.head_name)
-            column = len(self.head_name)
-            for unit in units:
+        for layout in self.layouts:
+            layout.matrix.append(layout.heads_name)
+            column = len(self.heads_name)
+            for unit in layout.sheet_json:
                 row = 1
                 for k, v in unit.items():
-                    if k == 'union_param_list':
-                        continue
-                    if self.sub_head.keys().__contains__(k):
+                    if layout.heads_redirect.keys().__contains__(k):
                         row = max(len(v), row)
-                mat0 = []
+                # 矩阵初始化
+                mat = []
                 for i in range(row):
                     ii = []
                     for j in range(column):
                         ii.append('')
-                    mat0.append(ii)
+                    mat.append(ii)
+
                 for k, v in unit.items():
-                    if k == 'union_param_list':
-                        continue
-                    if self.sub_head.keys().__contains__(k):
+                    if self.heads_redirect.keys().__contains__(k):
                         row = 0
-                        for v_list in v:
-                            if type(v_list) is not dict:
-                                continue
-                            for v_key, v_value in v_list.items():
-                                if v_key == 'params':
-                                    continue
-                                mat0[row][self.index0(v_key)] = v_value
+                        for list_v in v:
+                            for key_v, value_v in list_v.items():
+                                mat[row][layout.head_index(key_v)] = value_v
                             row += 1
                     else:
-                        index = self.index0(k)
-                        mat0[0][index] = v
-                matrix.append(mat0)
-
-            self.table_matrix[sheet_name] = matrix
-            print(matrix)
+                        mat[0][layout.head_index(k)] = v
+                layout.matrix.append(mat)
