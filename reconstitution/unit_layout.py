@@ -6,11 +6,10 @@ from reconstitution.config_reader import TableLoad
 @dataclass
 class SheetUnitLayout:
     load: TableLoad
-    table_id: str
     sheet_name: str
-    heads: [str]
+    heads: list[str]
     heads_redirect: dict
-    heads_name: [str]
+    heads_name: list[str]
     sheet_json: dict
     matrix: list
 
@@ -70,7 +69,6 @@ class UnitLayout:
             self.layouts.append(
                 SheetUnitLayout(
                     load=self.load,
-                    table_id=self.load.table_id,
                     heads=self.heads,
                     heads_redirect=self.heads_redirect,
                     heads_name=self.heads_name,
@@ -84,7 +82,6 @@ class UnitLayout:
                 self.layouts.append(
                     SheetUnitLayout(
                         load=self.load,
-                        table_id=self.load.table_id,
                         heads=self.heads,
                         heads_redirect=self.heads_redirect,
                         heads_name=self.heads_name,

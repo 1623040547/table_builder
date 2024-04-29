@@ -1,12 +1,12 @@
 {
   "app_id": "cli_a5321589fbfb900e",
   "app_secret": "npcTpll8Ik4A7bGxoejDyfMMWocfh8g2",
+  "index_path": "./index",
+  "data_path": "./data",
+  "file_suffix": ".json",
   "table": [
     {
       "table_id": "A4VhsjDEqhzEpXtbxNhcZGb4nCe",
-      "index_path": "./index",
-      "data_path": "./data",
-      "file_suffix": ".json",
       "loads": {
         "events_index": "events",
         "param_index": "params",

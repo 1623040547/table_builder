@@ -10,12 +10,12 @@ from util import MyUtil
 class ApiManager:
     colors = []
 
-    def __init__(self, sheet: str, file_id: str, app_id: str, app_secret: str) -> None:
+    def __init__(self, sheet: str, table_id: str, app_id: str, app_secret: str) -> None:
         self.app_id = app_id
         self.app_secret = app_secret
         self.sheet = sheet
         self.token = self.__get_token()
-        self.file_id = file_id
+        self.table_id = table_id
         self.headers = {"Authorization": "Bearer {0}".format(self.token)}
         self.sheets = self.__get_sheets()
 
@@ -34,7 +34,7 @@ class ApiManager:
     # 获取sheets列表
     def __get_sheets(self) -> SpreadSheets:
         response = requests.get(
-            "https://open.feishu.cn/open-apis/sheets/v3/spreadsheets/{0}/sheets/query".format(self.file_id),
+            "https://open.feishu.cn/open-apis/sheets/v3/spreadsheets/{0}/sheets/query".format(self.table_id),
             headers=self.headers,
         )
         raw_json = json.loads(bytes.decode(response.content))["data"]
@@ -46,7 +46,7 @@ class ApiManager:
     # 添加行
     def add_rows(self, count: int):
         response = requests.post(
-            "https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/{0}/dimension_range".format(self.file_id),
+            "https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/{0}/dimension_range".format(self.table_id),
             headers=self.headers,
             data=json.dumps(
                 {
@@ -65,7 +65,7 @@ class ApiManager:
         if count == 1:
             return
         response = requests.delete(
-            "https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/{0}/dimension_range".format(self.file_id),
+            "https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/{0}/dimension_range".format(self.table_id),
             headers=self.headers,
             data=json.dumps(
                 {
@@ -83,7 +83,7 @@ class ApiManager:
     # 添加表单
     def add_sheet(self, title: str):
         response = requests.post(
-            "https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/{0}/sheets_batch_update".format(self.file_id),
+            "https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/{0}/sheets_batch_update".format(self.table_id),
             headers=self.headers,
             data=json.dumps({
                 "requests": [
@@ -104,7 +104,7 @@ class ApiManager:
     # 移除表单样式
     def clean_sheet_style(self, sheet_id: str):
         response = requests.put(
-            "https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/{0}/styles_batch_update".format(self.file_id),
+            "https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/{0}/styles_batch_update".format(self.table_id),
             headers=self.headers,
             data=json.dumps({
                 "data": {
@@ -130,7 +130,7 @@ class ApiManager:
             chr(ord(alpha) + len(values[0]) - 1) + str(number + len(values) - 1)
         )
         response = requests.put(
-            "https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/{0}/values".format(self.file_id),
+            "https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/{0}/values".format(self.table_id),
             headers=self.headers,
             data=json.dumps(
                 {
@@ -150,7 +150,7 @@ class ApiManager:
             chr(ord(alpha) + width - 1) + str(number + length - 1)
         )
         response = requests.put(
-            "https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/{0}/styles_batch_update".format(self.file_id),
+            "https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/{0}/styles_batch_update".format(self.table_id),
             headers=self.headers,
             data=json.dumps(
                 {
@@ -176,7 +176,7 @@ class ApiManager:
             chr(ord(alpha) + width - 1) + str(number + length - 1)
         )
         response = requests.post(
-            "https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/{0}/dataValidation".format(self.file_id),
+            "https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/{0}/dataValidation".format(self.table_id),
             headers=self.headers,
             data=json.dumps(
                 {
@@ -203,7 +203,7 @@ class ApiManager:
             alpha + str(number + length - 1)
         )
         response = requests.post(
-            "https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/{0}/merge_cells".format(self.file_id),
+            "https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/{0}/merge_cells".format(self.table_id),
             headers=self.headers,
             data=json.dumps(
                 {
@@ -236,11 +236,11 @@ class ApiManager:
         }
 
     @classmethod
-    def link_style(cls, text: str, file_id: str, sheet_id: str, column: int, row: int):
+    def link_style(cls, text: str, table_id: str, sheet_id: str, column: int, row: int):
         column = cls.__link_column(column)
         row = cls.__link_row(row)
         link = 'https://lightweight.feishu.cn/sheets/{0}?sheet={1}&range={2}'.format(
-            file_id,
+            table_id,
             sheet_id,
             column + row
         )
