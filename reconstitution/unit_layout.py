@@ -67,7 +67,6 @@ class UnitLayout:
 
     def split_sheets(self):
         api_manager = ApiManager(
-            sheet=self.index['sheet_name'],
             table_id=self.load.table_id,
             app_id=self.load.app_id,
             app_secret=self.load.app_secret
@@ -96,7 +95,7 @@ class UnitLayout:
                         sheet_json=d['data'],
                         sheet_name=d[self.index['sheet_name']],
                         matrix=[],
-                        sheet_id=api_manager.create_sheet_id(self.index['sheet_name'])
+                        sheet_id=api_manager.create_sheet_id(d[self.index['sheet_name']])
                     )
                 )
         else:

@@ -18,7 +18,6 @@
       "event_name",
       "event_desc",
       "locations",
-      "event_plate",
       "panels"
     ],
     "pull_list": [

@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 import json
-from dataclasses_json import dataclass_json
 import sys
 import os
 

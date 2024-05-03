@@ -8,9 +8,9 @@
     {
       "table_id": "A4VhsjDEqhzEpXtbxNhcZGb4nCe",
       "loads": {
-        "events_index": "events",
         "param_index": "params",
-        "union_param_index": "union_params"
+        "union_param_index": "union_params",
+        "events_index": "events"
       }
     }
   ]

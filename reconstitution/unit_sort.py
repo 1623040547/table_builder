@@ -9,6 +9,7 @@ class SheetCombine:
     offset_y: int
     width: int
     height: int
+    is_global: bool
 
 
 @dataclass
@@ -26,6 +27,7 @@ class SheetUnitSort:
     layout: SheetUnitLayout
     sheet_combines: list[SheetCombine]
     sheet_pulls: list[SheetPullList]
+    unit_mark: list[int]
 
 
 @dataclass
@@ -71,12 +73,13 @@ class UnitSort:
             layout=self.layout,
             sheet_combines=[],
             sheet_pulls=[],
+            unit_mark=[]
         )
         self.set_combines()
         self.set_pulls()
 
         for row in self.layout.matrix[1:]:
-            row.pop()
+            self.sheet_sort.unit_mark.append(row.pop())
 
     def global_priority_mount(self):
         if len(self.global_mounts) == 0:
@@ -140,39 +143,45 @@ class UnitSort:
             global_combines = self.index_json['global_style']['combine']
         except:
             global_combines = []
-        global_map = {}
         try:
             unit_combines = self.index_json['unit_style']['combine']
         except:
             unit_combines = []
+        global_map = {}
         combines: list[SheetCombine] = []
         for i, row in enumerate(self.layout.matrix[1:]):
             i = i + 1
-            if row[-1] != 0:
-                for unit_combine in unit_combines:
-                    if row[-1] == 1:
-                        continue
+            is_last = (i == len(self.layout.matrix[1:]))
+            for unit_combine in unit_combines:
+                if row[-1] != 1 and row[-1] != 0:
                     combines.append(SheetCombine(
                         offset_x=self.layout.head_index(unit_combine),
                         offset_y=i,
                         width=1,
-                        height=row[-1]
+                        height=row[-1],
+                        is_global=False,
                     ), )
-                for global_combine in global_combines:
-                    index_g = self.layout.head_index(global_combine)
-                    if not global_map.__contains__(global_combine):
-                        global_map[global_combine] = [row[index_g], i]
-                    elif global_map[global_combine][0] != row[index_g]:
-                        height = i - global_map[global_combine][1]
-                        if height == 1:
-                            continue
+            for global_combine in global_combines:
+                index_g = self.layout.head_index(global_combine)
+                if row[-1] == 0 and not is_last:
+                    continue
+                if not global_map.__contains__(global_combine):
+                    global_map[global_combine] = [row[index_g], i]
+                elif (global_map[global_combine][0] != row[index_g]) or is_last:
+                    height = i - global_map[global_combine][1]
+                    if is_last:
+                        height += 1
+                    if height != 1:
                         combines.append(SheetCombine(
                             offset_x=index_g,
                             offset_y=global_map[global_combine][1],
                             width=1,
-                            height=height
+                            height=height,
+                            is_global=True,
                         ), )
-                        global_map[global_combine][1] = i
+                    global_map[global_combine][0] = row[index_g]
+                    global_map[global_combine][1] = i
+
         self.sheet_sort.sheet_combines = combines
 
     # [unit_style.pull_list]
@@ -185,6 +194,7 @@ class UnitSort:
         pulls: list[SheetPullList] = []
         for i, row in enumerate(self.layout.matrix[1:]):
             i = i + 1
+            is_last = (i == len(self.layout.matrix[1:]))
             for pull_item in pull_list:
                 index_p = self.layout.head_index(pull_item)
                 if type(row[index_p]) is list and len(row[index_p]) != 0:
@@ -212,4 +222,19 @@ class UnitSort:
                         pull_map[pull_item][0] = True
                         pull_map[pull_item][1] = i
                     pull_map[pull_item][2].extend(items)
+
+                if is_last and pull_map[pull_item][0]:
+                    pull_map[pull_item][0] = False
+                    height = i - pull_map[pull_item][1]
+                    if is_last:
+                        height += 1
+                    pulls.append(SheetPullList(
+                        is_multi=pull_map[pull_item][-1],
+                        offset_x=index_p,
+                        offset_y=pull_map[pull_item][1],
+                        width=1,
+                        height=height,
+                        values=pull_map[pull_item][2]
+                    ))
+
         self.sheet_sort.sheet_pulls = pulls

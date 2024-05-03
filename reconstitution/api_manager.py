@@ -4,16 +4,14 @@ import random
 import requests
 
 from data_model.sheet import SpreadSheets
-from util import MyUtil
 
 
 class ApiManager:
-    colors = []
+    colors = ['#fcffe6', '#ecf4eb']
 
-    def __init__(self, sheet: str, table_id: str, app_id: str, app_secret: str) -> None:
+    def __init__(self, table_id: str, app_id: str, app_secret: str) -> None:
         self.app_id = app_id
         self.app_secret = app_secret
-        self.sheet = sheet
         self.token = self.__get_token()
         self.table_id = table_id
         self.headers = {"Authorization": "Bearer {0}".format(self.token)}
@@ -44,14 +42,14 @@ class ApiManager:
         return SpreadSheets.from_json(json.dumps(raw_json))
 
     # 添加行
-    def add_rows(self, count: int):
+    def add_rows(self, count: int, sheet_id: str):
         response = requests.post(
             "https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/{0}/dimension_range".format(self.table_id),
             headers=self.headers,
             data=json.dumps(
                 {
                     "dimension": {
-                        "sheetId": self.sheets.where(self.sheet).sheet_id,
+                        "sheetId": sheet_id,
                         "majorDimension": "ROWS",
                         "length": count + 1
                     }
@@ -61,7 +59,7 @@ class ApiManager:
         print(response.content)
 
     # 移除行
-    def remove_rows(self, count: int):
+    def remove_rows(self, count: int, sheet_id: str):
         if count == 1:
             return
         response = requests.delete(
@@ -70,10 +68,28 @@ class ApiManager:
             data=json.dumps(
                 {
                     "dimension": {
-                        "sheetId": self.sheets.where(self.sheet).sheet_id,
+                        "sheetId": sheet_id,
                         "majorDimension": "ROWS",
                         "startIndex": 1,
                         "endIndex": count - 1
+                    }
+                }
+            )
+        )
+        print(response.content)
+
+    def remove_all_rows(self, sheet_id: str):
+        s = self.__get_sheets()
+        response = requests.delete(
+            "https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/{0}/dimension_range".format(self.table_id),
+            headers=self.headers,
+            data=json.dumps(
+                {
+                    "dimension": {
+                        "sheetId": sheet_id,
+                        "majorDimension": "ROWS",
+                        "startIndex": 1,
+                        "endIndex": s.where_id(sheet_id).grid_properties.row_count - 1
                     }
                 }
             )
@@ -123,11 +139,13 @@ class ApiManager:
         print(response.content)
 
     # 写入值
-    def write_values(self, values, alpha: str, number: int):
+    def write_values(self, values, offset_x: int, offset_y: int, sheet_id: str):
+        offset_x = chr(ord('A') + offset_x)
+        offset_y += 1
         ran = "{0}!{1}:{2}".format(
-            self.sheets.where(self.sheet).sheet_id,
-            "{0}{1}".format(alpha, number),
-            chr(ord(alpha) + len(values[0]) - 1) + str(number + len(values) - 1)
+            sheet_id,
+            "{0}{1}".format(offset_x, offset_y),
+            chr(ord(offset_x) + len(values[0]) - 1) + str(offset_y + len(values) - 1)
         )
         response = requests.put(
             "https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/{0}/values".format(self.table_id),
@@ -143,11 +161,14 @@ class ApiManager:
         print(response.content)
 
     # 写入背景色
-    def write_bg_color(self, width: int, length: int, alpha: str, number: int, color=''):
-        ran = "{0}!{1}:{2}".format(
-            self.sheets.where(self.sheet).sheet_id,
-            "{0}{1}".format(alpha, number),
-            chr(ord(alpha) + width - 1) + str(number + length - 1)
+    def write_bg_color(self, width: int, length: int, offset_x: int, offset_y: int, sheet_id: str, color=''):
+        color_style = self.color_style(
+            width=width,
+            length=length,
+            offset_y=offset_y,
+            offset_x=offset_x,
+            color=color,
+            sheet_id=sheet_id,
         )
         response = requests.put(
             "https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/{0}/styles_batch_update".format(self.table_id),
@@ -155,26 +176,35 @@ class ApiManager:
             data=json.dumps(
                 {
                     "data": [
-                        {
-                            "ranges": [ran],
-                            "style": {
-                                "backColor": color
-                            }
-                        }
+                        color_style
                     ]
                 })
         )
         print(response.content)
 
+    def write_bg_colors(self, color_list: list[dict]):
+        response = requests.put(
+            "https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/{0}/styles_batch_update".format(self.table_id),
+            headers=self.headers,
+            data=json.dumps(
+                {
+                    "data": color_list
+                })
+        )
+        print(response.content)
+
     # 设置下拉列表
-    def set_pull_list(self, values, width: int, length: int, alpha: str, number: int, multi=True, ):
-        if length == 0 | len(values) == 0:
+    def set_pull_list(self, values, width: int, height: int, offset_x: int, offset_y: int, sheet_id: str, multi=True, ):
+        offset_x = chr(ord('A') + offset_x)
+        offset_y += 1
+        if height == 0 | len(values) == 0:
             return
         ran = "{0}!{1}:{2}".format(
-            self.sheets.where(self.sheet).sheet_id,
-            "{0}{1}".format(alpha, number),
-            chr(ord(alpha) + width - 1) + str(number + length - 1)
+            sheet_id,
+            "{0}{1}".format(offset_x, offset_y),
+            chr(ord(offset_x) + width - 1) + str(offset_y + height - 1)
         )
+        values = list(set(values))
         response = requests.post(
             "https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/{0}/dataValidation".format(self.table_id),
             headers=self.headers,
@@ -187,7 +217,7 @@ class ApiManager:
                         "options": {
                             "multipleValues": multi,
                             "highlightValidData": True,
-                            "colors": MyUtil.gen_colors(len(values))
+                            "colors": self.ram_colors(len(values))
                         }
                     }
                 }
@@ -196,11 +226,13 @@ class ApiManager:
         print(response.content)
 
     # 合并列
-    def merge_column(self, length: int, alpha: str, number: int, ):
+    def merge_column(self, length: int, offset_x: int, offset_y: int, sheet_id: str):
+        offset_x = chr(ord('A') + offset_x)
+        offset_y += 1
         ran = "{0}!{1}:{2}".format(
-            self.sheets.where(self.sheet).sheet_id,
-            "{0}{1}".format(alpha, number),
-            alpha + str(number + length - 1)
+            sheet_id,
+            "{0}{1}".format(offset_x, offset_y),
+            offset_x + str(offset_y + length - 1)
         )
         response = requests.post(
             "https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/{0}/merge_cells".format(self.table_id),
@@ -222,12 +254,21 @@ class ApiManager:
             return self.create_sheet_id(sheet)
 
     @classmethod
-    def ram_colors(cls, length):
-        if len(cls.colors) < length:
-            for i in range(length):
+    def ram_color(cls, index):
+        if len(cls.colors) < index + 1:
+            for i in range(index + 1):
                 color = "#" + "".join([random.choice("ABCDEF") for _ in range(6)])
                 cls.colors.append(color)
-        return cls.colors[0:length]
+        return cls.colors[index]
+
+    @classmethod
+    def ram_colors(cls, count):
+        count += 2
+        if len(cls.colors) < count:
+            for i in range(count):
+                color = "#" + "".join([random.choice("ABCDEF") for _ in range(6)])
+                cls.colors.append(color)
+        return cls.colors[2:count]
 
     @classmethod
     def pull_list_style(cls, pull: [str]):
@@ -250,7 +291,7 @@ class ApiManager:
     @classmethod
     def link_style(cls, text: str, table_id: str, sheet_id: str, column: int, row: int):
         column = cls.__link_column(column)
-        row = cls.__link_row(row)
+        row = cls.__link_row(row + 1)
         link = 'https://lightweight.feishu.cn/sheets/{0}?sheet={1}&range={2}'.format(
             table_id,
             sheet_id,
@@ -261,6 +302,22 @@ class ApiManager:
             'text': text,
             'link': link,
             'type': 'url'
+        }
+
+    @classmethod
+    def color_style(cls, width: int, length: int, offset_x: int, offset_y: int, sheet_id: str, color='', ):
+        offset_x = chr(ord('A') + offset_x)
+        offset_y += 1
+        ran = "{0}!{1}:{2}".format(
+            sheet_id,
+            "{0}{1}".format(offset_x, offset_y),
+            chr(ord(offset_x) + width - 1) + str(offset_y + length - 1)
+        )
+        return {
+            "ranges": [ran],
+            "style": {
+                "backColor": color
+            }
         }
 
     @classmethod
@@ -281,7 +338,7 @@ class ApiManager:
         :param index: 飞书电子表格行向量下标
         :return: 电子表格单元格行向量'0'-'9999'编码
         """
-        # 没有找到通解，硬编码0 - 9999
+        # 硬编码0 - 9999
         levels = {
             0: {'1': 'E', '2': 'I', '3': 'M', '4': 'Q', '5': 'U', '6': 'Y', '7': 'Tc', '8': 'Tg', '9': 'Tk'},
             1: {'0': 'w', '1': 'x', '2': 'y', '3': 'z', '4': '0', '5': '1', '6': '2', '7': '3', '8': '4', '9': '5'},
