@@ -41,7 +41,7 @@ class ConfigReader:
         for t in j["table"]:
             table_id = t["table_id"]
             table_name = t['name']
-            sel_table_name = os.path.dirname(sys.argv[0])
+            sel_table_name = sys.argv[1]
             if sel_table_name != table_name:
                 continue
             for k, v in t["loads"].items():
