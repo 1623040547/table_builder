@@ -125,6 +125,6 @@ class SheetMapping:
         if sheet_name == 'latest' or sheet_name == 'param' or sheet_name == 'union_param':
             return False
         for sheet in ApiManager.new_sheets:
-            if sheet.sheet_name == sheet_name:
+            if sheet.title == sheet_name:
                 return False
         return ConfigReader.is_increment
