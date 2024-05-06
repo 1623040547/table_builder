@@ -3,11 +3,12 @@ import random
 
 import requests
 
-from data_model.sheet import SpreadSheets
+from data_model.sheet import SpreadSheets, Sheet
 
 
 class ApiManager:
     colors = ['#fcffe6', '#ecf4eb']
+    new_sheets: list[Sheet] = []
 
     def __init__(self, table_id: str, app_id: str, app_secret: str) -> None:
         self.app_id = app_id
@@ -251,6 +252,7 @@ class ApiManager:
             return self.sheets.where(sheet).sheet_id
         else:
             self.add_sheet(sheet)
+            ApiManager.new_sheets.append(self.sheets.where(sheet))
             return self.create_sheet_id(sheet)
 
     @classmethod

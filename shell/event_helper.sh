@@ -38,7 +38,7 @@ flutter test  --dart-define="FILE_PATH=$EVENT_HELPER_PATH/data/$APP_NAME" "${PRO
 cd $EVENT_HELPER_PATH || exit
 echo "------------------ 开始更新飞书电子表格"
 
-/usr/bin/python3 $EVENT_HELPER_PATH/main.py "$APP_NAME"
+/usr/bin/python3 $EVENT_HELPER_PATH/main.py "$APP_NAME" "$IS_INCREMENT"
 echo "------------------ 消息同步至群"
 if [ "$APP_ROBOT_NOTIFICATION" = false ]; then
   exit 0

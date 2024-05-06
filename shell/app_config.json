@@ -1,14 +1,14 @@
 {
     "my_healer":{
-        "chat_robot_api": "https://open.feishu.cn/open-apis/bot/v2/hook/b699b7d7-e06b-4fca-b36c-a32c1a497449",
+        "chat_robot_api": "https://open.feishu.cn/open-apis/bot/v2/hook/ad769008-0852-4f72-b56f-7e1733165091",
         "link":"https://lightweight.feishu.cn/sheets/A4VhsjDEqhzEpXtbxNhcZGb4nCe"
     },
     "diviner":{
-        "chat_robot_api": "https://open.feishu.cn/open-apis/bot/v2/hook/c6faad80-bc80-4966-a430-e99e9a98deaa",
+        "chat_robot_api": "https://open.feishu.cn/open-apis/bot/v2/hook/b4cdda99-88d0-49a2-8382-f46f30f9d36f",
         "link": "https://lightweight.feishu.cn/sheets/AXFisqI1HhlRF0t09nMcCvJZnDc"
     },
     "spiritrue":{
-        "chat_robot_api": "https://open.feishu.cn/open-apis/bot/v2/hook/4d639ab4-dd70-476a-b522-f84083c53978",
+        "chat_robot_api": "https://open.feishu.cn/open-apis/bot/v2/hook/42054e28-0ac1-4e84-806d-88e1fe317151",
         "link": "https://lightweight.feishu.cn/sheets/GiFusk4t6hszj2tmRdRcPEVhnac"
     }
 }

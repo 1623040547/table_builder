@@ -1,4 +1,5 @@
 from reconstitution.api_manager import ApiManager
+from reconstitution.config_reader import ConfigReader
 from reconstitution.global_style import SheetGlobalStyle
 
 
@@ -16,6 +17,9 @@ class SheetMapping:
     def init_sheets(self):
         for style in self.styles:
             sort = style.sort
+            if self.increment_pass(sort.layout.sheet_id) and sort.layout.sheet_name != 'latest':
+                print('increment pass '+ sort.layout.sheet_name)
+                continue
             apiManager = ApiManager(
                 app_id=sort.layout.load.app_id,
                 table_id=sort.layout.load.table_id,
@@ -32,6 +36,8 @@ class SheetMapping:
     def mapping_pull_list(self):
         for style in self.styles:
             sort = style.sort
+            if self.increment_pass(sort.layout.sheet_id) and sort.layout.sheet_name != 'latest':
+                continue
             apiManager = ApiManager(
                 app_id=sort.layout.load.app_id,
                 table_id=sort.layout.load.table_id,
@@ -51,8 +57,8 @@ class SheetMapping:
     def mapping_values(self):
         for style in self.styles:
             sort = style.sort
-            if sort.layout.sheet_name == 'latest':
-                pass
+            if self.increment_pass(sort.layout.sheet_id) and sort.layout.sheet_name != 'latest':
+                continue
             apiManager = ApiManager(
                 app_id=sort.layout.load.app_id,
                 table_id=sort.layout.load.table_id,
@@ -72,6 +78,8 @@ class SheetMapping:
     def mapping_combine(self):
         for style in self.styles:
             sort = style.sort
+            if self.increment_pass(sort.layout.sheet_id):
+                continue
             apiManager = ApiManager(
                 app_id=sort.layout.load.app_id,
                 table_id=sort.layout.load.table_id,
@@ -89,6 +97,8 @@ class SheetMapping:
     def mapping_color(self):
         for style in self.styles:
             sort = style.sort
+            if self.increment_pass(sort.layout.sheet_id) and sort.layout.sheet_name != 'latest':
+                continue
             apiManager = ApiManager(
                 app_id=sort.layout.load.app_id,
                 table_id=sort.layout.load.table_id,
@@ -109,3 +119,10 @@ class SheetMapping:
                     ))
                 apiManager.write_bg_colors(color_list=colors)
                 offset += 100
+
+    # 增量跳过
+    def increment_pass(self, sheet_id: str):
+        for sheet in ApiManager.new_sheets:
+            if sheet.sheet_id == sheet_id:
+                return False
+        return ConfigReader.is_increment

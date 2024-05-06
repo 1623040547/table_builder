@@ -24,7 +24,7 @@ class ConfigReader:
     app_id = None
     app_secret = None
     loads = []
-
+    is_increment = False
     config = None
 
     @classmethod
@@ -36,7 +36,11 @@ class ConfigReader:
         cls.index_path = j["index_path"]
         cls.data_path = j["data_path"]
         cls.file_suffix = j["file_suffix"]
-
+        try:
+            cls.is_increment = sys.argv[2]
+            print(cls.is_increment)
+        except:
+            pass
         for t in j["table"]:
             table_id = t["table_id"]
             table_name = t['name']
