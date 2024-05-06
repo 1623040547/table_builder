@@ -17,7 +17,7 @@ class SheetMapping:
     def init_sheets(self):
         for style in self.styles:
             sort = style.sort
-            if self.increment_pass(sort.layout.sheet_id) and sort.layout.sheet_name != 'latest':
+            if self.increment_pass(sort.layout.sheet_name):
                 print('increment pass '+ sort.layout.sheet_name)
                 continue
             apiManager = ApiManager(
@@ -36,7 +36,7 @@ class SheetMapping:
     def mapping_pull_list(self):
         for style in self.styles:
             sort = style.sort
-            if self.increment_pass(sort.layout.sheet_id) and sort.layout.sheet_name != 'latest':
+            if self.increment_pass(sort.layout.sheet_name):
                 continue
             apiManager = ApiManager(
                 app_id=sort.layout.load.app_id,
@@ -57,7 +57,7 @@ class SheetMapping:
     def mapping_values(self):
         for style in self.styles:
             sort = style.sort
-            if self.increment_pass(sort.layout.sheet_id) and sort.layout.sheet_name != 'latest':
+            if self.increment_pass(sort.layout.sheet_name):
                 continue
             apiManager = ApiManager(
                 app_id=sort.layout.load.app_id,
@@ -78,7 +78,7 @@ class SheetMapping:
     def mapping_combine(self):
         for style in self.styles:
             sort = style.sort
-            if self.increment_pass(sort.layout.sheet_id):
+            if self.increment_pass(sort.layout.sheet_name):
                 continue
             apiManager = ApiManager(
                 app_id=sort.layout.load.app_id,
@@ -97,7 +97,7 @@ class SheetMapping:
     def mapping_color(self):
         for style in self.styles:
             sort = style.sort
-            if self.increment_pass(sort.layout.sheet_id) and sort.layout.sheet_name != 'latest':
+            if self.increment_pass(sort.layout.sheet_name):
                 continue
             apiManager = ApiManager(
                 app_id=sort.layout.load.app_id,
@@ -121,8 +121,10 @@ class SheetMapping:
                 offset += 100
 
     # 增量跳过
-    def increment_pass(self, sheet_id: str):
+    def increment_pass(self, sheet_name:str):
+        if sheet_name == 'latest' or sheet_name == 'param' or sheet_name == 'union_param':
+            return False
         for sheet in ApiManager.new_sheets:
-            if sheet.sheet_id == sheet_id:
+            if sheet.sheet_name == sheet_name:
                 return False
         return ConfigReader.is_increment

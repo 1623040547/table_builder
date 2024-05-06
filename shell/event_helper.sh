@@ -40,6 +40,8 @@ echo "------------------ 开始更新飞书电子表格"
 
 /usr/bin/python3 $EVENT_HELPER_PATH/main.py "$APP_NAME" "$IS_INCREMENT"
 echo "------------------ 消息同步至群"
+echo "$APP_NAME" 
+echo "$IS_INCREMENT"
 if [ "$APP_ROBOT_NOTIFICATION" = false ]; then
   exit 0
 fi
