@@ -9,6 +9,7 @@ class TableLoad:
     app_id: str
     app_secret: str
     table_id: str
+    table_name: str
     index_name: str
     data_name: str
     index_json: dict
@@ -17,7 +18,7 @@ class TableLoad:
 
 # file/sheet/
 class ConfigReader:
-    project_dir = os.path.dirname(sys.argv[0])
+    project_dir = ''
     index_path = ''
     data_path = ''
     file_suffix = ''
@@ -39,9 +40,13 @@ class ConfigReader:
 
         for t in j["table"]:
             table_id = t["table_id"]
+            table_name = t['name']
+            sel_table_name = os.path.dirname(sys.argv[0])
+            if sel_table_name != table_name:
+                continue
             for k, v in t["loads"].items():
                 index_file = cls.index_path + '/' + k + cls.file_suffix
-                data_file = cls.data_path + '/' + v + cls.file_suffix
+                data_file = cls.data_path + '/' + table_name + '/' + v + cls.file_suffix
                 cls.loads.append(
                     TableLoad(
                         app_id=cls.app_id,
@@ -50,7 +55,8 @@ class ConfigReader:
                         index_name=k,
                         data_name=v,
                         index_json=json.load(open(index_file, encoding='utf-8')),
-                        data_json=json.load(open(data_file, encoding='utf-8'))
+                        data_json=json.load(open(data_file, encoding='utf-8')),
+                        table_name=table_name
                     )
                 )
 

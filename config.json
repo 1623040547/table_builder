@@ -7,6 +7,25 @@
   "table": [
     {
       "table_id": "A4VhsjDEqhzEpXtbxNhcZGb4nCe",
+      "name": "my_healer",
+      "loads": {
+        "param_index": "params",
+        "union_param_index": "union_params",
+        "events_index": "events"
+      }
+    },
+    {
+      "table_id": "GiFusk4t6hszj2tmRdRcPEVhnac",
+      "name": "spiritrue",
+      "loads": {
+        "param_index": "params",
+        "union_param_index": "union_params",
+        "events_index": "events"
+      }
+    },
+    {
+      "table_id": "AXFisqI1HhlRF0t09nMcCvJZnDc",
+      "name": "diviner",
       "loads": {
         "param_index": "params",
         "union_param_index": "union_params",
